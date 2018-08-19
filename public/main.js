@@ -20,7 +20,35 @@ const getSingleMovie = (id) => {
 const showSingleMovie = (e) => {
   getSingleMovie(e.target.dataset.id)
     .then((movie) => {
-      console.log(movie);
+      const movieTitle = document.createElement('h2');
+      movieTitle.textContent = movie.Title;
+      movieList.appendChild(movieTitle);
+
+      const moviePoster = document.createElement('img');
+      moviePoster.setAttribute('src', movie.Poster);
+      movieList.appendChild(moviePoster);
+
+      const moviePlot = document.createElement('p');
+      moviePlot.textContent = movie.Plot;
+      movieList.appendChild(moviePlot);
+      console.log(moviePlot);
+
+      const faveButton = document.createElement('button');
+      faveButton.textContent = 'Fave';
+      faveButton.addEventListener('click', () => {
+        const init = {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(movie),
+        };
+        fetch('/favorites', init)
+          .then(res => res.json())
+          .then(res => console.log(res));
+      });
+      movieList.appendChild(faveButton);
     });
 };
 
