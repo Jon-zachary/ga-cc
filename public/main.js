@@ -1,16 +1,14 @@
 /* eslint-env browser */
-
-console.log('main.js online');
-
 const submitButton = document.querySelector('#search-button');
 const movieSearch = document.querySelector('#movie-search');
 const movieList = document.querySelector('.movieList');
+const favesButton = document.querySelector('.faves');
+
 const baseUrl = 'http://www.omdbapi.com';
 const apiKey = 'c9d5cf65';
-let data = [];
+// let data = [];
 
 const getSingleMovie = (id) => {
-  movieList.innerHTML = '';
   const query = id;
   const movie = fetch(`${baseUrl}/?i=${query}&apikey=${apiKey}`)
     .then(res => res.json());
@@ -18,6 +16,7 @@ const getSingleMovie = (id) => {
 };
 
 const showSingleMovie = (e) => {
+  movieList.innerHTML = '';
   getSingleMovie(e.target.dataset.id)
     .then((movie) => {
       const movieTitle = document.createElement('h2');
@@ -31,7 +30,6 @@ const showSingleMovie = (e) => {
       const moviePlot = document.createElement('p');
       moviePlot.textContent = movie.Plot;
       movieList.appendChild(moviePlot);
-      console.log(moviePlot);
 
       const faveButton = document.createElement('button');
       faveButton.textContent = 'Fave';
@@ -45,14 +43,14 @@ const showSingleMovie = (e) => {
           body: JSON.stringify(movie),
         };
         fetch('/favorites', init)
-          .then(res => res.json())
-          .then(res => console.log(res));
+          .then(res => res.json());
       });
       movieList.appendChild(faveButton);
     });
 };
 
 const showMovies = (moviesPromise) => {
+  movieList.innerHTML = '';
   moviesPromise.then((movies) => {
     movies.Search.forEach((movie) => {
       const movieP = document.createElement('p');
@@ -60,17 +58,35 @@ const showMovies = (moviesPromise) => {
       movieP.dataset.id = movie.imdbID;
       movieP.addEventListener('click', showSingleMovie);
       movieList.appendChild(movieP);
-      console.log(movie);
     });
   });
 };
 
-const getAllMovies = (e) => {
-  e.preventDefault();
+const showFaves = (moviesPromise) => {
+  movieList.innerHTML = '';
+  moviesPromise.then((movies) => {
+    movies.forEach((movie) => {
+      const movieP = document.createElement('p');
+      movieP.textContent = movie.Title;
+      movieP.dataset.id = movie.imdbID;
+      movieP.addEventListener('click', showSingleMovie);
+      movieList.appendChild(movieP);
+    });
+  });
+};
+
+const getFaves = () => {
+  const data = fetch('/favorites')
+    .then(res => res.json());
+  showFaves(data);
+};
+
+const getAllMovies = () => {
   const query = movieSearch.value;
-  data = fetch(`${baseUrl}/?s=${query}&page=1&apikey=${apiKey}`)
+  const data = fetch(`${baseUrl}/?s=${query}&page=1&apikey=${apiKey}`)
     .then(res => res.json());
   showMovies(data);
 };
 
 submitButton.addEventListener('click', getAllMovies);
+favesButton.addEventListener('click', getFaves);
