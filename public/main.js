@@ -7,7 +7,7 @@ const movieList = document.querySelector('.movieList');
 const favesButton = document.querySelector('.faves');
 
 // API Variables
-const baseUrl = 'http://www.omdbapi.com';
+const baseUrl = 'https://www.omdbapi.com';
 const apiKey = 'c9d5cf65';
 
 // Fetches a single movie from the omdb api given it's id.
