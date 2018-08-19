@@ -38,7 +38,7 @@ const showSingleMovie = (e) => {
       movieList.appendChild(moviePlot);
 
       const faveButton = document.createElement('button');
-      faveButton.textContent = 'Fave';
+      faveButton.textContent = 'Add movie to favorites';
       faveButton.addEventListener('click', () => {
         const init = {
           method: 'POST',
